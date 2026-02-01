@@ -34,8 +34,9 @@ const getWeather = async (req, res) => {
     });
 
   } catch (error) {
-    console.error(error.message);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(error.statusCode || 500).json({
+      error: error.message || "Internal Server Error"
+    });
   }
 };
 

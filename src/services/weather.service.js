@@ -23,15 +23,22 @@ const fetchWeather = async (city) => {
     };
 
   } catch (error) {
-    // 🔥 VERY IMPORTANT DEBUG
-    console.error("Axios error message:", error.message);
 
-    if (error.response) {
-      console.error("Status:", error.response.status);
-      console.error("Data:", error.response.data);
+    if (error.response && error.response.status === 404) {
+      const err = new Error("City not found");
+      err.statusCode = 404;
+      throw err;
     }
 
-    throw error; // rethrow so controller can handle
+    if (error.response && error.response.status === 401) {
+      const err = new Error("Weather service authentication failed");
+      err.statusCode = 401;
+      throw err;
+    }
+
+    const err = new Error("Weather service error");
+    err.statusCode = 500;
+    throw err;
   }
 };
 
